@@ -31,7 +31,6 @@ async function loadAllTeams() {
   return allTeams;
 }
 
-
 var currentLeague = "NFL";
 var selectedTeam = null;
 
@@ -60,13 +59,12 @@ function generateSeasonOptions() {
 function populateSeasonDropdown() {
   var seasons = generateSeasonOptions();
   seasonSelect.innerHTML = "";
-  for (var i = 0; i < seasons.length; i++) {
-    var season = seasons[i];
+  seasons.forEach(season => {
     var opt = document.createElement("option");
     opt.value = season;
     opt.textContent = season;
     seasonSelect.appendChild(opt);
-  }
+  });
   seasonSelect.value = detectFootballSeason();
 }
 
@@ -79,12 +77,11 @@ loadAllTeams().then(t => {
   renderTeams();
 });
 
-
 function renderTeams() {
   teamsGrid.innerHTML = "";
   var search = teamSearch.value.toLowerCase();
 
-  var filtered = TEAMS.filter(function (t) {
+  var filtered = TEAMS.filter(t => {
     if (t.league !== currentLeague) return false;
 
     var name = (t.displayName || "").toLowerCase();
@@ -92,19 +89,17 @@ function renderTeams() {
     var nick = (t.nickname || "").toLowerCase();
 
     return (
-      name.indexOf(search) !== -1 ||
-      short.indexOf(search) !== -1 ||
-      nick.indexOf(search) !== -1
+      name.includes(search) ||
+      short.includes(search) ||
+      nick.includes(search)
     );
   });
 
-  filtered.sort(function (a, b) {
-    var aKey = (a.displayName || "").toLowerCase();
-    var bKey = (b.displayName || "").toLowerCase();
-    return aKey.localeCompare(bKey);
-  });
+  filtered.sort((a, b) =>
+    (a.displayName || "").toLowerCase().localeCompare((b.displayName || "").toLowerCase())
+  );
 
-  filtered.forEach(function (team) {
+  filtered.forEach(team => {
     var card = document.createElement("div");
     card.className = "team-card";
     card.style.background = team.color || "#111827";
@@ -117,9 +112,7 @@ function renderTeams() {
       <div><strong>${team.nickname || ""}</strong></div>
     `;
 
-    card.onclick = function () {
-      selectTeam(team);
-    };
+    card.onclick = () => selectTeam(team);
 
     if (selectedTeam && selectedTeam.espnTeamId === team.espnTeamId) {
       card.classList.add("selected");
@@ -149,19 +142,12 @@ function loadScores(team) {
   var leaguePath = team.league === "NFL" ? "nfl" : "college-football";
 
   var url =
-    "https://site.api.espn.com/apis/site/v2/sports/football/" +
-    leaguePath +
-    "/teams/" +
-    team.espnTeamId +
-    "/schedule?season=" +
-    season;
+    `https://site.api.espn.com/apis/site/v2/sports/football/${leaguePath}/teams/${team.espnTeamId}/schedule?season=${season}`;
 
   fetch(url)
-    .then(function (res) {
-      return res.json();
-    })
-    .then(function (data) {
-      var events = data && data.events ? data.events : [];
+    .then(res => res.json())
+    .then(data => {
+      var events = data?.events || [];
       if (!events.length) {
         scoresList.innerHTML = "No games found for this season.";
         return;
@@ -169,22 +155,18 @@ function loadScores(team) {
 
       scoresList.innerHTML = "";
 
-      events.forEach(function (ev) {
-        var comp = ev.competitions && ev.competitions[0] ? ev.competitions[0] : null;
-        if (!comp || !comp.competitors) return;
+      events.forEach(ev => {
+        var comp = ev.competitions?.[0];
+        if (!comp) return;
 
-        var home = comp.competitors.find(function (c) {
-          return c.homeAway === "home";
-        });
-        var away = comp.competitors.find(function (c) {
-          return c.homeAway === "away";
-        });
+        var home = comp.competitors.find(c => c.homeAway === "home");
+        var away = comp.competitors.find(c => c.homeAway === "away");
         if (!home || !away) return;
 
         var homeScore = safeScore(home.score);
         var awayScore = safeScore(away.score);
 
-        var weekText = ev.week && ev.week.text ? ev.week.text : "Week";
+        var weekText = ev.week?.text || "Week";
         var dateText = ev.date ? new Date(ev.date).toLocaleDateString() : "";
 
         var card = document.createElement("div");
@@ -207,7 +189,7 @@ function loadScores(team) {
         scoresList.appendChild(card);
       });
     })
-    .catch(function () {
+    .catch(() => {
       scoresList.innerHTML = "Error loading scores.";
     });
 }
@@ -216,10 +198,10 @@ leagueToggle.onclick = function (e) {
   var btn = e.target.closest("button");
   if (!btn) return;
   currentLeague = btn.dataset.league;
-  Array.prototype.forEach.call(leagueToggle.children, function (b) {
-    b.classList.remove("active");
-  });
+
+  Array.from(leagueToggle.children).forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
+
   selectedTeam = null;
   scoresList.innerHTML = "";
   renderTeams();
