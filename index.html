@@ -5,7 +5,6 @@
   <title>Football Scores Explorer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Allow ESPN logos -->
   <meta http-equiv="Content-Security-Policy" content="img-src https: data:;">
 
   <style>
@@ -182,29 +181,27 @@
       padding: 12px;
     }
 
-    .score-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 6px;
+    .score-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 6px;
+      column-gap: 12px;
+      margin-top: 8px;
     }
 
-    .score-team-line {
-      display: flex;
-      gap: 6px;
-      align-items: center;
+    .score-team {
+      font-size: 1rem;
     }
 
-    .score-home-away {
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 0.7rem;
-      color: var(--text-muted);
+    .score-value {
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: right;
     }
 
     .score-vs {
-      margin-top: 6px;
-      font-size: 0.8rem;
+      margin-top: 10px;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
   </style>
@@ -243,166 +240,4 @@
 
   <script>
     const TEAMS = [
-      { league: "NFL", city: "Buffalo", name: "Bills", abbrev: "BUF", espnTeamId: 2, primaryColor: "#00338D", logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" },
-      { league: "NFL", city: "Kansas City", name: "Chiefs", abbrev: "KC", espnTeamId: 12, primaryColor: "#E31837", logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" },
-      { league: "NFL", city: "Dallas", name: "Cowboys", abbrev: "DAL", espnTeamId: 6, primaryColor: "#003594", logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" },
-      { league: "NFL", city: "San Francisco", name: "49ers", abbrev: "SF", espnTeamId: 25, primaryColor: "#AA0000", logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png" },
-      { league: "NFL", city: "Philadelphia", name: "Eagles", abbrev: "PHI", espnTeamId: 21, primaryColor: "#004C54", logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png" },
-
-      { league: "CFB", city: "Baton Rouge", name: "LSU Tigers", abbrev: "LSU", espnTeamId: 99, primaryColor: "#461D7C", logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/99.png" },
-      { league: "CFB", city: "Tuscaloosa", name: "Alabama Crimson Tide", abbrev: "ALA", espnTeamId: 333, primaryColor: "#9E1B32", logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/333.png" },
-      { league: "CFB", city: "Columbus", name: "Ohio State Buckeyes", abbrev: "OSU", espnTeamId: 194, primaryColor: "#BB0000", logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/194.png" },
-      { league: "CFB", city: "Ann Arbor", name: "Michigan Wolverines", abbrev: "MICH", espnTeamId: 130, primaryColor: "#00274C", logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/130.png" },
-      { league: "CFB", city: "Athens", name: "Georgia Bulldogs", abbrev: "UGA", espnTeamId: 61, primaryColor: "#BA0C2F", logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/61.png" }
-    ];
-
-    let currentLeague = "NFL";
-    let selectedTeam = null;
-
-    const leagueToggle = document.getElementById("leagueToggle");
-    const seasonSelect = document.getElementById("seasonSelect");
-    const teamSearch = document.getElementById("teamSearch");
-    const teamsGrid = document.getElementById("teamsGrid");
-    const scoresList = document.getElementById("scoresList");
-
-    function detectFootballSeason() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      return month >= 8 ? year : year - 1;
-    }
-
-    function generateSeasonOptions() {
-      const currentSeason = detectFootballSeason();
-      const seasons = [];
-      for (let i = 0; i < 5; i++) {
-        seasons.push(currentSeason - i);
-      }
-      return seasons;
-    }
-
-    function populateSeasonDropdown() {
-      const seasons = generateSeasonOptions();
-      seasonSelect.innerHTML = "";
-      seasons.forEach(season => {
-        const opt = document.createElement("option");
-        opt.value = season;
-        opt.textContent = season;
-        seasonSelect.appendChild(opt);
-      });
-      seasonSelect.value = detectFootballSeason();
-    }
-
-    populateSeasonDropdown();
-
-    function renderTeams() {
-      teamsGrid.innerHTML = "";
-      const search = teamSearch.value.toLowerCase();
-
-      TEAMS.filter(t => t.league === currentLeague)
-        .filter(t => (t.city + " " + t.name).toLowerCase().includes(search))
-        .sort((a, b) => (a.city + a.name).localeCompare(b.city + b.name))
-        .forEach(team => {
-          const card = document.createElement("div");
-          card.className = "team-card";
-          card.style.background = team.primaryColor;
-
-          card.innerHTML = `
-            <div class="team-logo-wrap">
-              <img src="${team.logoUrl}">
-            </div>
-            <div>${team.city}</div>
-            <div><strong>${team.name}</strong></div>
-          `;
-
-          card.onclick = () => selectTeam(team);
-
-          if (selectedTeam && selectedTeam.abbrev === team.abbrev) {
-            card.classList.add("selected");
-          }
-
-          teamsGrid.appendChild(card);
-        });
-    }
-
-    async function selectTeam(team) {
-      selectedTeam = team;
-      renderTeams();
-      loadScores(team);
-    }
-
-    async function loadScores(team) {
-      scoresList.innerHTML = "Loading…";
-
-      const season = seasonSelect.value;
-      const leaguePath = team.league === "NFL" ? "nfl" : "college-football";
-
-      const url = `https://site.api.espn.com/apis/site/v2/sports/football/${leaguePath}/teams/${team.espnTeamId}/schedule?season=${season}`;
-
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const events = data.events || [];
-      if (!events.length) {
-        scoresList.innerHTML = "No games found for this season.";
-        return;
-      }
-
-      scoresList.innerHTML = "";
-
-      events.forEach(ev => {
-        const comp = ev.competitions[0];
-        const home = comp.competitors.find(c => c.homeAway === "home");
-        const away = comp.competitors.find(c => c.homeAway === "away");
-
-        const homeScore = home.score?.value ?? home.score ?? "0";
-        const awayScore = away.score?.value ?? away.score ?? "0";
-
-        const card = document.createElement("div");
-        card.className = "score-card";
-
-        card.innerHTML = `
-          <div><strong>${ev.week?.text || "Week"}</strong> — ${new Date(ev.date).toLocaleDateString()}</div>
-
-          <div class="score-row">
-            <div class="score-team-line">
-              <span>${away.team.displayName}</span>
-              <span class="score-home-away">Away</span>
-            </div>
-
-            <div class="score-score">${awayScore} – ${homeScore}</div>
-
-            <div class="score-team-line">
-              <span>${home.team.displayName}</span>
-              <span class="score-home-away">Home</span>
-            </div>
-          </div>
-
-          <div class="score-vs">${away.team.displayName} @ ${home.team.displayName}</div>
-        `;
-
-        scoresList.appendChild(card);
-      });
-    }
-
-    leagueToggle.onclick = e => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-      currentLeague = btn.dataset.league;
-      [...leagueToggle.children].forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedTeam = null;
-      scoresList.innerHTML = "";
-      renderTeams();
-    };
-
-    seasonSelect.onchange = () => {
-      if (selectedTeam) loadScores(selectedTeam);
-    };
-
-    teamSearch.oninput = renderTeams;
-
-    renderTeams();
-  </script>
-</body>
-</html>
+      { league: "NFL", city: "Buffalo", name: "Bills", abbrev: "BUF", espnTeamId: 2, primaryColor: "#00338D", logoUrl: "https
