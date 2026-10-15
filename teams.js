@@ -30,7 +30,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Buffalo Bills",
     shortDisplayName: "Bills",
     nickname: "Bills",
@@ -40,7 +40,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Carolina Panthers",
     shortDisplayName: "Panthers",
     nickname: "Panthers",
@@ -50,7 +50,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/car.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Chicago Bears",
     shortDisplayName: "Bears",
     nickname: "Bears",
@@ -60,7 +60,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Cincinnati Bengals",
     shortDisplayName: "Bengals",
     nickname: "Bengals",
@@ -70,7 +70,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Cleveland Browns",
     shortDisplayName: "Browns",
     nickname: "Browns",
@@ -80,7 +80,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Dallas Cowboys",
     shortDisplayName: "Cowboys",
     nickname: "Cowboys",
@@ -90,7 +90,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Denver Broncos",
     shortDisplayName: "Broncos",
     nickname: "Broncos",
@@ -100,7 +100,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/den.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Detroit Lions",
     shortDisplayName: "Lions",
     nickname: "Lions",
@@ -110,7 +110,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/det.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Green Bay Packers",
     shortDisplayName: "Packers",
     nickname: "Packers",
@@ -120,7 +120,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Houston Texans",
     shortDisplayName: "Texans",
     nickname: "Texans",
@@ -130,7 +130,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Indianapolis Colts",
     shortDisplayName: "Colts",
     nickname: "Colts",
@@ -140,7 +140,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Jacksonville Jaguars",
     shortDisplayName: "Jaguars",
     nickname: "Jaguars",
@@ -150,7 +150,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Kansas City Chiefs",
     shortDisplayName: "Chiefs",
     nickname: "Chiefs",
@@ -160,7 +160,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Las Vegas Raiders",
     shortDisplayName: "Raiders",
     nickname: "Raiders",
@@ -170,7 +170,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Los Angeles Chargers",
     shortDisplayName: "Chargers",
     nickname: "Chargers",
@@ -180,7 +180,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Los Angeles Rams",
     shortDisplayName: "Rams",
     nickname: "Rams",
@@ -190,7 +190,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Miami Dolphins",
     shortDisplayName: "Dolphins",
     nickname: "Dolphins",
@@ -200,7 +200,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Minnesota Vikings",
     shortDisplayName: "Vikings",
     nickname: "Vikings",
@@ -210,7 +210,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/min.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "New England Patriots",
     shortDisplayName: "Patriots",
     nickname: "Patriots",
@@ -220,7 +220,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "New Orleans Saints",
     shortDisplayName: "Saints",
     nickname: "Saints",
@@ -230,7 +230,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/no.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "New York Giants",
     shortDisplayName: "Giants",
     nickname: "Giants",
@@ -240,7 +240,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "New York Jets",
     shortDisplayName: "Jets",
     nickname: "Jets",
@@ -250,7 +250,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Philadelphia Eagles",
     shortDisplayName: "Eagles",
     nickname: "Eagles",
@@ -260,7 +260,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Pittsburgh Steelers",
     shortDisplayName: "Steelers",
     nickname: "Steelers",
@@ -270,7 +270,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "San Francisco 49ers",
     shortDisplayName: "49ers",
     nickname: "49ers",
@@ -280,7 +280,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Seattle Seahawks",
     shortDisplayName: "Seahawks",
     nickname: "Seahawks",
@@ -290,7 +290,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Tampa Bay Buccaneers",
     shortDisplayName: "Buccaneers",
     nickname: "Buccaneers",
@@ -300,7 +300,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Tennessee Titans",
     shortDisplayName: "Titans",
     nickname: "Titans",
@@ -310,7 +310,7 @@ let TEAMS = [
     logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png"
   },
   {
-    league: ,
+    league: "NFL",
     displayName: "Washington Commanders",
     shortDisplayName: "Commanders",
     nickname: "Commanders",
