@@ -2208,7 +2208,7 @@ let TEAMS = [
     color: "#046A38",
     alternateColor: "#A1A1A4",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2670.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Bucknell Bison",
@@ -2278,7 +2278,7 @@ let TEAMS = [
     color: "#4D4D4F",
     alternateColor: "#B3A369",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/232.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Butler Bulldogs",
@@ -2378,7 +2378,7 @@ let TEAMS = [
     color: "#4D4D4F",
     alternateColor: "#FFC72C",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2678.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Chattanooga Mocs",
@@ -2468,7 +2468,7 @@ let TEAMS = [
     color: "#000000",
     alternateColor: "#B3A369",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2736.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Houston Christian Huskies",
@@ -2548,7 +2548,7 @@ let TEAMS = [
     color: "#0033A0",
     alternateColor: "#FFC72C",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2920.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Alabama A&M Bulldogs",
@@ -2668,7 +2668,7 @@ let TEAMS = [
     color: "#7A0019",
     alternateColor: "#A1A1A4",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2634.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Austin Peay Governors",
