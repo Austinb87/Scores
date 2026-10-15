@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Football Scores Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #05060a;
+      --bg-elevated: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border: #1f2937;
+      --card-bg: #020617;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1200px;
+      background: linear-gradient(145deg, #020617 0, #030712 40%, #020617 100%);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow:
+        0 40px 80px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      padding: 24px 28px 28px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span.logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.9);
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .pill-toggle {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.7);
+    }
+
+    .pill-toggle button {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-toggle button.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .pill-toggle button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .pill-toggle button.active span.dot {
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1 1 220px;
+      max-width: 320px;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 8px 32px 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #020617;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease,
+        background 0.16s ease;
+    }
+
+    .search-wrapper input::placeholder {
+      color: #4b5563;
+    }
+
+    .search-wrapper input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+      background: #030712;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+      color: #4b5563;
+      pointer-events: none;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: var(--bg-elevated);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 14px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 220px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+
+    .panel-subtitle {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+      overflow-y: auto;
+      max-height: 420px;
+      padding-right: 4px;
+    }
+
+    .team-card {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 110px;
+      box-shadow:
+        0 10px 18px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(15, 23, 42, 0.7);
+      transform: translateY(0);
+      transition: transform 0.14s ease, box-shadow 0.14s ease,
+        filter 0.14s ease, opacity 0.14s ease;
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 16px 26px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+      filter: brightness(1.05);
+    }
+
+    .team-card.selected {
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.9),
+        0 18px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .team-card-dimmed {
+      opacity: 0.35;
+      filter: grayscale(0.4);
+    }
+
+    .team-card-inner {
+      position: relative;
+      padding: 10px 10px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1;
+    }
+
+    .team-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .team-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 70%;
+    }
+
+    .team-city {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .team-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .team-league-pill {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      color: rgba(229, 231, 235, 0.9);
+      white-space: nowrap;
+    }
+
+    .team-logo-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+    }
+
+    .team-logo-wrap img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+    }
+
+    .team-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: rgba(243, 244, 246, 0.9);
+    }
+
+    .team-footer span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .team-footer span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .team-gradient-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.18),
+        transparent 55%
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .scores-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+      overflow-y: auto;
+      max-height: 420px;
+      padding-right: 4px;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.6);
+    }
+
+    .score-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .score-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .score-week {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+
+    .score-date {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .score-status {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #030712;
+      color: #e5e7eb;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .score-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .score-team {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .score-team-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .score-team-name {
+      font-weight: 600;
+    }
+
+    .score-home-away {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #9ca3af;
+    }
+
+    .score-score {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .score-vs {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+    }
+
+    .empty-state {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      padding: 10px 2px 4px;
+    }
+
+    .loading {
+      font-size: 0.85rem;
+      color: var(--accent);
+      padding: 10px 2px 4px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title-block">
+        <h1>
+          <span class="logo-dot"></span>
+          Football Scores Explorer
+        </h1>
+        <div class="subtitle">
+          Browse NFL & CFB teams, then see their game scores for this season.
+        </div>
+      </div>
+      <div class="controls">
+        <div class="pill-toggle" id="leagueToggle">
+          <button data-league="NFL" class="active">
+            <span class="dot"></span>
+            NFL
+          </button>
+          <button data-league="CFB">
+            <span class="dot"></span>
+            CFB
+          </button>
+        </div>
+        <div class="search-wrapper">
+          <input
+            id="teamSearch"
+            type="text"
+            placeholder="Search by city or team name..."
+            autocomplete="off"
+          />
+          <span class="search-icon">⌕</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Teams</div>
+            <div class="panel-subtitle">
+              Select a team card to load this season’s matchups.
+            </div>
+          </div>
+        </div>
+        <div class="teams-grid" id="teamsGrid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Season Matchups</div>
+            <div class="panel-subtitle" id="scoresSubtitle">
+              Choose a team to see their scores for the current season.
+            </div>
+          </div>
+        </div>
+        <div class="badge-row" id="scoresBadges"></div>
+        <div class="scores-list" id="scoresList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // --- Static team data (sample set; extend as needed) ---
+    // Each team: league, city, name, abbrev, espnTeamId, primaryColor, logoUrl
+    const TEAMS = [
+      // NFL
+      {
+        league: "NFL",
+        city: "Buffalo",
+        name: "Bills",
+        abbrev: "BUF",
+        espnTeamId: 2,
+        primaryColor: "#00338D",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+      },
+      {
+        league: "NFL",
+        city: "Kansas City",
+        name: "Chiefs",
+        abbrev: "KC",
+        espnTeamId: 12,
+        primaryColor: "#E31837",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
+      },
+      {
+        league: "NFL",
+        city: "Dallas",
+        name: "Cowboys",
+        abbrev: "DAL",
+        espnTeamId: 6,
+        primaryColor: "#003594",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"
+      },
+      {
+        league: "NFL",
+        city: "San Francisco",
+        name: "49ers",
+        abbrev: "SF",
+        espnTeamId: 25,
+        primaryColor: "#AA0000",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"
+      },
+      {
+        league: "NFL",
+        city: "Philadelphia",
+        name: "Eagles",
+        abbrev: "PHI",
+        espnTeamId: 21,
+        primaryColor: "#004C54",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"
+      },
+
+      // CFB (FBS sample)
+      {
+        league: "CFB",
+        city: "Baton Rouge",
+        name: "LSU Tigers",
+        abbrev: "LSU",
+        espnTeamId: 99,
+        primaryColor: "#461D7C",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/ncaa/500/99.png"
+      },
+      {
+        league: "CFB",
+        city: "Tuscaloosa",
+        name: "Alabama Crimson Tide",
+        abbrev: "ALA",
+        espnTeamId: 333,
+        primaryColor: "#9E1B32",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/ncaa/500/333.png"
+      },
+      {
+        league: "CFB",
+        city: "Columbus",
+        name: "Ohio State Buckeyes",
+        abbrev: "OSU",
+        espnTeamId: 194,
+        primaryColor: "#BB0000",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/ncaa/500/194.png"
+      },
+      {
+        league: "CFB",
+        city: "Ann Arbor",
+        name: "Michigan Wolverines",
+        abbrev: "MICH",
+        espnTeamId: 130,
+        primaryColor: "#00274C",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/ncaa/500/130.png"
+      },
+      {
+        league: "CFB",
+        city: "Athens",
+        name: "Georgia Bulldogs",
+        abbrev: "UGA",
+        espnTeamId: 61,
+        primaryColor: "#BA0C2F",
+        logoUrl:
+          "https://a.espncdn.com/i/teamlogos/ncaa/500/61.png"
+      }
+    ];
+
+    // --- State ---
+    let currentLeague = "NFL";
+    let selectedTeam = null;
+
+    const leagueToggle = document.getElementById("leagueToggle");
+    const teamSearch = document.getElementById("teamSearch");
+    const teamsGrid = document.getElementById("teamsGrid");
+    const scoresList = document.getElementById("scoresList");
+    const scoresSubtitle = document.getElementById("scoresSubtitle");
+    const scoresBadges = document.getElementById("scoresBadges");
+
+    // --- Helpers ---
+    function getCurrentYear() {
+      return new Date().getFullYear();
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return "";
+      return d.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function createTeamCard(team) {
+      const card = document.createElement("div");
+      card.className = "team-card";
+      card.dataset.league = team.league;
+      card.dataset.abbrev = team.abbrev;
+
+      card.style.background = team.primaryColor;
+
+      const inner = document.createElement("div");
+      inner.className = "team-card-inner";
+
+      const topRow = document.createElement("div");
+      topRow.className = "team-top-row";
+
+      const text = document.createElement("div");
+      text.className = "team-text";
+
+      const city = document.createElement("div");
+      city.className = "team-city";
+      city.textContent = team.city;
+
+      const name = document.createElement("div");
+      name.className = "team-name";
+      name.textContent = team.name;
+
+      text.appendChild(city);
+      text.appendChild(name);
+
+      const logoWrap = document.createElement("div");
+      logoWrap.className = "team-logo-wrap";
+
+      const img = document.createElement("img");
+      img.src = team.logoUrl;
+      img.alt = team.name + " logo";
+      logoWrap.appendChild(img);
+
+      topRow.appendChild(text);
+      topRow.appendChild(logoWrap);
+
+      const footer = document.createElement("div");
+      footer.className = "team-footer";
+
+      const leagueSpan = document.createElement("span");
+      leagueSpan.textContent = team.league;
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      leagueSpan.prepend(dot);
+
+      const abbrevSpan = document.createElement("span");
+      abbrevSpan.textContent = team.abbrev;
+
+      footer.appendChild(leagueSpan);
+      footer.appendChild(abbrevSpan);
+
+      inner.appendChild(topRow);
+      inner.appendChild(footer);
+
+      const overlay = document.createElement("div");
+      overlay.className = "team-gradient-overlay";
+
+      card.appendChild(inner);
+      card.appendChild(overlay);
+
+      card.addEventListener("click", () => {
+        selectTeam(team);
+      });
+
+      return card;
+    }
+
+    function renderTeams() {
+      teamsGrid.innerHTML = "";
+      const searchTerm = teamSearch.value.trim().toLowerCase();
+
+      const filtered = TEAMS.filter((t) => t.league === currentLeague)
+        .sort((a, b) => {
+          const nameA = (a.city + " " + a.name).toLowerCase();
+          const nameB = (b.city + " " + b.name).toLowerCase();
+          return nameA.localeCompare(nameB);
+        })
+        .filter((t) => {
+          if (!searchTerm) return true;
+          const combined = (t.city + " " + t.name).toLowerCase();
+          return combined.includes(searchTerm);
+        });
+
+      filtered.forEach((team) => {
+        const card = createTeamCard(team);
+        if (selectedTeam && selectedTeam.league === team.league &&
+            selectedTeam.abbrev === team.abbrev) {
+          card.classList.add("selected");
+        }
+        teamsGrid.appendChild(card);
+      });
+
+      // Dim non-matching teams when searching (optional subtle effect)
+      if (searchTerm) {
+        const allCards = teamsGrid.querySelectorAll(".team-card");
+        allCards.forEach((card) => {
+          const abbrev = card.dataset.abbrev;
+          const team = filtered.find((t) => t.abbrev === abbrev);
+          if (!team) {
+            card.classList.add("team-card-dimmed");
+          } else {
+            card.classList.remove("team-card-dimmed");
+          }
+        });
+      }
+    }
+
+    function setLeague(league) {
+      currentLeague = league;
+      selectedTeam = null;
+      scoresList.innerHTML = "";
+      scoresBadges.innerHTML = "";
+      scoresSubtitle.textContent =
+        "Choose a team to see their scores for the current season.";
+      const buttons = leagueToggle.querySelectorAll("button");
+      buttons.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.league === league);
+      });
+      renderTeams();
+    }
+
+    function selectTeam(team) {
+      selectedTeam = team;
+      const allCards = teamsGrid.querySelectorAll(".team-card");
+      allCards.forEach((card) => {
+        const abbrev = card.dataset.abbrev;
+        const league = card.dataset.league;
+        const isSelected =
+          league === team.league && abbrev === team.abbrev;
+        card.classList.toggle("selected", isSelected);
+      });
+
+      scoresSubtitle.textContent =
+        team.city + " " + team.name + " — " + getCurrentYear() + " season matchups";
+
+      scoresBadges.innerHTML = "";
+      const badgeLeague = document.createElement("div");
+      badgeLeague.className = "badge";
+      badgeLeague.textContent = team.league;
+      const badgeAbbrev = document.createElement("div");
+      badgeAbbrev.className = "badge";
+      badgeAbbrev.textContent = team.abbrev;
+      scoresBadges.appendChild(badgeLeague);
+      scoresBadges.appendChild(badgeAbbrev);
+
+      loadSeasonScores(team);
+    }
+
+    function showLoading() {
+      scoresList.innerHTML = "";
+      const div = document.createElement("div");
+      div.className = "loading";
+      div.textContent = "Loading season scores from ESPN…";
+      scoresList.appendChild(div);
+    }
+
+    function showEmpty(message) {
+      scoresList.innerHTML = "";
+      const div = document.createElement("div");
+      div.className = "empty-state";
+      div.textContent = message;
+      scoresList.appendChild(div);
+    }
+
+    function createScoreCard(game, teamAbbrev) {
+      const card = document.createElement("div");
+      card.className = "score-card";
+
+      const header = document.createElement("div");
+      header.className = "score-header";
+
+      const headerLeft = document.createElement("div");
+      headerLeft.className = "score-header-left";
+
+      const week = document.createElement("div");
+      week.className = "score-week";
+      week.textContent = game.weekText || "Week";
+
+      const date = document.createElement("div");
+      date.className = "score-date";
+      date.textContent = formatDate(game.date);
+
+      headerLeft.appendChild(week);
+      headerLeft.appendChild(date);
+
+      const status = document.createElement("div");
+      status.className = "score-status";
+      status.textContent = game.statusText || "Final";
+
+      header.appendChild(headerLeft);
+      header.appendChild(status);
+
+      const body = document.createElement("div");
+      body.className = "score-body";
+
+      const row = document.createElement("div");
+      row.className = "score-row";
+
+      const home = document.createElement("div");
+      home.className = "score-team";
+
+      const homeLine = document.createElement("div");
+      homeLine.className = "score-team-line";
+
+      const homeName = document.createElement("div");
+      homeName.className = "score-team-name";
+      homeName.textContent = game.homeTeam;
+
+      const homeHA = document.createElement("div");
+      homeHA.className = "score-home-away";
+      homeHA.textContent = "Home";
+
+      homeLine.appendChild(homeName);
+      homeLine.appendChild(homeHA);
+      home.appendChild(homeLine);
+
+      const away = document.createElement("div");
+      away.className = "score-team";
+
+      const awayLine = document.createElement("div");
+      awayLine.className = "score-team-line";
+
+      const awayName = document.createElement("div");
+      awayName.className = "score-team-name";
+      awayName.textContent = game.awayTeam;
+
+      const awayHA = document.createElement("div");
+      awayHA.className = "score-home-away";
+      awayHA.textContent = "Away";
+
+      awayLine.appendChild(awayName);
+      awayLine.appendChild(awayHA);
+      away.appendChild(awayLine);
+
+      const scoreBlock = document.createElement("div");
+      scoreBlock.style.textAlign = "right";
+
+      const scoreText = document.createElement("div");
+      scoreText.className = "score-score";
+      scoreText.textContent = game.homeScore + " – " + game.awayScore;
+
+      const vsText = document.createElement("div");
+      vsText.className = "score-vs";
+      vsText.textContent =
+        teamAbbrev === game.homeAbbrev ? "You were HOME" : "You were AWAY";
+
+      scoreBlock.appendChild(scoreText);
+      scoreBlock.appendChild(vsText);
+
+      row.appendChild(home);
+      row.appendChild(scoreBlock);
+      row.appendChild(away);
+
+      body.appendChild(row);
+
+      card.appendChild(header);
+      card.appendChild(body);
+
+      return card;
+    }
+
+    // --- ESPN schedule fetching ---
+    async function loadSeasonScores(team) {
+      showLoading();
+      const year = getCurrentYear();
+
+      try {
+        let url;
+        if (team.league === "NFL") {
+          // ESPN NFL team schedule
+          url = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${team.espnTeamId}/schedule?season=${year}`;
+        } else {
+          // ESPN CFB team schedule
+          url = `https://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/${team.espnTeamId}/schedule?season=${year}`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          showEmpty("Unable to load scores from ESPN right now.");
+          return;
+        }
+        const data = await res.json();
+
+        const events = data.events || [];
+        if (!events.length) {
+          showEmpty("No games found for this season yet.");
+          return;
+        }
+
+        const games = events.map((ev) => {
+          const comp = ev.competitions && ev.competitions[0];
+          const competitors = comp ? comp.competitors || [] : [];
+          const home = competitors.find((c) => c.homeAway === "home") || {};
+          const away = competitors.find((c) => c.homeAway === "away") || {};
+
+          return {
+            date: ev.date,
+            weekText:
+              (ev.week && ev.week.text) ||
+              (data.season && data.season.year
+                ? "Week"
+                : "Week"),
+            statusText:
+              (ev.status &&
+                ev.status.type &&
+                ev.status.type.description) ||
+              "Final",
+            homeTeam:
+              (home.team && home.team.displayName) || "Home",
+            awayTeam:
+              (away.team && away.team.displayName) || "Away",
+            homeScore: home.score || "0",
+            awayScore: away.score || "0",
+            homeAbbrev:
+              (home.team && home.team.abbreviation) || "",
+            awayAbbrev:
+              (away.team && away.team.abbreviation) || ""
+          };
+        });
+
+        scoresList.innerHTML = "";
+        games.forEach((g) => {
+          const card = createScoreCard(g, team.abbrev);
+          scoresList.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        showEmpty("Error loading scores. Please try again.");
+      }
+    }
+
+    // --- Event wiring ---
+    leagueToggle.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const league = btn.dataset.league;
+      if (!league || league === currentLeague) return;
+      setLeague(league);
+    });
+
+    teamSearch.addEventListener("input", () => {
+      renderTeams();
+    });
+
+    // --- Initial render ---
+    renderTeams();
+  </script>
+</body>
+</html>
