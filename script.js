@@ -1,36 +1,32 @@
-async function loadAllTeams() {
-  const leagues = [
-    { league: "NFL", path: "nfl" },
-    { league: "CFB", path: "college-football" }
-  ];
-
-  let allTeams = [];
-
-  for (const l of leagues) {
-    const url = `https://site.api.espn.com/apis/site/v2/sports/football/${l.path}/teams`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    const teams = data.sports[0].leagues[0].teams.map(t => {
-      const info = t.team;
-      return {
-        league: l.league,
-        displayName: info.displayName,
-        shortDisplayName: info.shortDisplayName,
-        nickname: info.nickname,
-        espnTeamId: info.id,
-        color: info.color || "#111827",
-        alternateColor: info.alternateColor || "#374151",
-        logoUrl: info.logos?.[0]?.href || ""
-      };
-    });
-
-    allTeams = allTeams.concat(teams);
+// ===============================
+// HARDCODED TEAMS (we will expand this later)
+// ===============================
+let TEAMS = [
+  {
+    league: "NFL",
+    displayName: "Buffalo Bills",
+    shortDisplayName: "Bills",
+    nickname: "Bills",
+    espnTeamId: 2,
+    color: "#00338D",
+    alternateColor: "#C60C30",
+    logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
+  },
+  {
+    league: "NFL",
+    displayName: "Kansas City Chiefs",
+    shortDisplayName: "Chiefs",
+    nickname: "Chiefs",
+    espnTeamId: 12,
+    color: "#E31837",
+    alternateColor: "#FFB81C",
+    logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
   }
+];
 
-  return allTeams;
-}
-
+// ===============================
+// STATE
+// ===============================
 var currentLeague = "NFL";
 var selectedTeam = null;
 
@@ -40,6 +36,9 @@ var teamSearch = document.getElementById("teamSearch");
 var teamsGrid = document.getElementById("teamsGrid");
 var scoresList = document.getElementById("scoresList");
 
+// ===============================
+// SEASON DROPDOWN
+// ===============================
 function detectFootballSeason() {
   var now = new Date();
   var year = now.getFullYear();
@@ -70,13 +69,9 @@ function populateSeasonDropdown() {
 
 populateSeasonDropdown();
 
-let TEAMS = [];
-
-loadAllTeams().then(t => {
-  TEAMS = t;
-  renderTeams();
-});
-
+// ===============================
+// RENDER TEAMS
+// ===============================
 function renderTeams() {
   teamsGrid.innerHTML = "";
   var search = teamSearch.value.toLowerCase();
@@ -122,17 +117,23 @@ function renderTeams() {
   });
 }
 
+// ===============================
+// SELECT TEAM
+// ===============================
+function selectTeam(team) {
+  selectedTeam = team;
+  renderTeams();
+  loadScores(team);
+}
+
+// ===============================
+// LOAD SCORES (this API works on GitHub Pages)
+// ===============================
 function safeScore(scoreObj) {
   if (!scoreObj) return "0";
   if (typeof scoreObj === "string" || typeof scoreObj === "number") return scoreObj;
   if (scoreObj.value !== undefined) return scoreObj.value;
   return "0";
-}
-
-function selectTeam(team) {
-  selectedTeam = team;
-  renderTeams();
-  loadScores(team);
 }
 
 function loadScores(team) {
@@ -194,6 +195,9 @@ function loadScores(team) {
     });
 }
 
+// ===============================
+// LEAGUE SWITCH
+// ===============================
 leagueToggle.onclick = function (e) {
   var btn = e.target.closest("button");
   if (!btn) return;
@@ -212,3 +216,6 @@ seasonSelect.onchange = function () {
 };
 
 teamSearch.oninput = renderTeams;
+
+// Initial render
+renderTeams();
