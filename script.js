@@ -1,32 +1,3 @@
-// ===============================
-// HARDCODED TEAMS (we will expand this later)
-// ===============================
-let TEAMS = [
-  {
-    league: "NFL",
-    displayName: "Buffalo Bills",
-    shortDisplayName: "Bills",
-    nickname: "Bills",
-    espnTeamId: 2,
-    color: "#00338D",
-    alternateColor: "#C60C30",
-    logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"
-  },
-  {
-    league: "NFL",
-    displayName: "Kansas City Chiefs",
-    shortDisplayName: "Chiefs",
-    nickname: "Chiefs",
-    espnTeamId: 12,
-    color: "#E31837",
-    alternateColor: "#FFB81C",
-    logoUrl: "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
-  }
-];
-
-// ===============================
-// STATE
-// ===============================
 var currentLeague = "NFL";
 var selectedTeam = null;
 
@@ -127,7 +98,7 @@ function selectTeam(team) {
 }
 
 // ===============================
-// LOAD SCORES (this API works on GitHub Pages)
+// LOAD SCORES
 // ===============================
 function safeScore(scoreObj) {
   if (!scoreObj) return "0";
