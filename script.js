@@ -1,3 +1,37 @@
+async function loadAllTeams() {
+  const leagues = [
+    { league: "NFL", path: "nfl" },
+    { league: "CFB", path: "college-football" }
+  ];
+
+  let allTeams = [];
+
+  for (const l of leagues) {
+    const url = `https://site.api.espn.com/apis/site/v2/sports/football/${l.path}/teams`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const teams = data.sports[0].leagues[0].teams.map(t => {
+      const info = t.team;
+      return {
+        league: l.league,
+        displayName: info.displayName,
+        shortDisplayName: info.shortDisplayName,
+        nickname: info.nickname,
+        espnTeamId: info.id,
+        color: info.color || "#111827",
+        alternateColor: info.alternateColor || "#374151",
+        logoUrl: info.logos?.[0]?.href || ""
+      };
+    });
+
+    allTeams = allTeams.concat(teams);
+  }
+
+  return allTeams;
+}
+
+
 var currentLeague = "NFL";
 var selectedTeam = null;
 
@@ -37,6 +71,14 @@ function populateSeasonDropdown() {
 }
 
 populateSeasonDropdown();
+
+let TEAMS = [];
+
+loadAllTeams().then(t => {
+  TEAMS = t;
+  renderTeams();
+});
+
 
 function renderTeams() {
   teamsGrid.innerHTML = "";
