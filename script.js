@@ -41,6 +41,16 @@ function populateSeasonDropdown() {
 populateSeasonDropdown();
 
 // ===============================
+// NFL CITY EXTRACTOR
+// ===============================
+function getNFLTeamCity(team) {
+  if (team.league !== "NFL") return team.displayName;
+  const parts = team.displayName.split(" ");
+  parts.pop(); // remove mascot
+  return parts.join(" ");
+}
+
+// ===============================
 // RENDER TEAMS
 // ===============================
 function renderTeams() {
@@ -70,12 +80,19 @@ function renderTeams() {
     card.className = "team-card";
     card.style.background = team.color || "#111827";
 
+    let name;
+    if (team.league === "NFL") {
+      const city = getNFLTeamCity(team);
+      name = `${city} ${team.nickname}`;
+    } else {
+      name = team.displayName;
+    }
+
     card.innerHTML = `
       <div class="team-logo-wrap">
         <img src="${team.logoUrl}">
       </div>
-      <div>${team.shortDisplayName || ""}</div>
-      <div><strong>${team.nickname || ""}</strong></div>
+      <div><strong>${name}</strong></div>
     `;
 
     card.onclick = () => selectTeam(team);
