@@ -230,6 +230,3 @@ seasonSelect.onchange = function () {
 };
 
 teamSearch.oninput = renderTeams;
-
-renderTeams();
-
