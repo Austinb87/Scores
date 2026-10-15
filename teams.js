@@ -2128,7 +2128,7 @@ let TEAMS = [
     color: "#4B2E83",
     alternateColor: "#FFC72C",
     logoUrl: "https://a.espncdn.com/i/teamlogos/ncaa/500/2717.png"
-  }
+  },
   {
     league: "CFB",
     displayName: "Central Connecticut State Blue Devils",
